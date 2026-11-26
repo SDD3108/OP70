@@ -18,18 +18,30 @@ const authSlice = createSlice({
   },
   extraReducers(builder) {
     builder
-      .addCase(logoutUser.fulfilled, (state) => { state.user = null; state.status = "idle"; state.error = null; })
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.user = null
+        state.status = "idle"
+        state.error = null
+      })
       .addMatcher(
-        (action) => [loginUser.pending.type, registerUser.pending.type, loadCurrentUser.pending.type, logoutUser.pending.type].includes(action.type),
-        (state) => { state.status = "loading"; state.error = null; },
+        (action) => [loginUser.pending.type, registerUser.pending.type, loadCurrentUser.pending.type, logoutUser.pending.type].includes(action.type),(state) => {
+          state.status = "loading";
+          state.error = null;
+        },
       )
       .addMatcher(
         (action) => [loginUser.fulfilled.type, registerUser.fulfilled.type, loadCurrentUser.fulfilled.type].includes(action.type),
-        (state, action) => { state.user = action.payload; state.status = "succeeded"; },
+        (state, action) => {
+          state.user = action.payload
+          state.status = "succeeded"
+        },
       )
       .addMatcher(
         (action) => [loginUser.rejected.type, registerUser.rejected.type, loadCurrentUser.rejected.type, logoutUser.rejected.type].includes(action.type),
-        (state, action) => { state.status = "failed"; state.error = action.error?.message || "Ошибка запроса"; },
+        (state, action) => {
+          state.status = "failed"
+          state.error = action.error?.message || "Ошибка запроса"
+        },
       );
   },
 });

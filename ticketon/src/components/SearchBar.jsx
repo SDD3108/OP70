@@ -24,7 +24,7 @@ export default function SearchBar({ initialValue = "", placeholder = "Назва
         placeholder={placeholder}
         className="min-w-0 flex-1 bg-transparent px-2 py-2 text-sm text-zinc-900 outline-none placeholder:text-zinc-400"
       />
-      <button type="submit" className="shrink-0 rounded-lg bg-[#00e35b] px-5 py-3 text-sm font-bold text-zinc-950 transition-colors hover:bg-[#00c94f]">Найти</button>
+      <button type="submit" className="shrink-0 rounded-lg bg-primary px-5 py-3 text-sm font-bold text-primary-foreground transition-colors hover:bg-accent-foreground">Найти</button>
     </form>
   );
 }

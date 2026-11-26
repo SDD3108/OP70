@@ -16,7 +16,7 @@ export default function TicketCard({ booking }) {
   return (
     <article className="flex flex-col justify-between gap-5 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm sm:flex-row sm:items-center">
       <div className="flex items-start gap-4">
-        <div className="rounded-xl bg-emerald-50 p-3 text-emerald-700"><TicketCheck className="h-7 w-7" aria-hidden="true" /></div>
+        <div className="rounded-xl bg-accent p-3 text-primary"><TicketCheck className="h-7 w-7" aria-hidden="true" /></div>
         <div>
           <p className="font-bold text-zinc-900">{event.title || booking.event_title || "Билет на мероприятие"}</p>
           <p className="mt-2 flex items-center gap-2 text-sm text-zinc-500"><CalendarDays className="h-4 w-4" /> {formatDate(start)}</p>

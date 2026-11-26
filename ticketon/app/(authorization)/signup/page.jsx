@@ -4,7 +4,7 @@ import SignUpPageBuilder from '@/src/pageBuilders/SignUpPageBuilder'
 const SignUpPage = () => {
   return (
     <>
-        <SignUpPageBuilder/>
+      <SignUpPageBuilder/>
     </>
   )
 }

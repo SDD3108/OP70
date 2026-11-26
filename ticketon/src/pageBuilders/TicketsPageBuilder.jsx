@@ -1,9 +1,10 @@
 import React from 'react'
 
+
 const TicketsPageBuilder = () => {
   return (
     <>
-        <TicketsPageBuilder/>
+      Tickets
     </>
   )
 }

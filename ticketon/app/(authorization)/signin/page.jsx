@@ -4,7 +4,7 @@ import SignInPageBuilder from '@/src/pageBuilders/SignInPageBuilder'
 const SignInPage = () => {
   return (
     <>
-        <SignInPageBuilder/>
+      <SignInPageBuilder/>
     </>
   )
 }
