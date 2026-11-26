@@ -5,9 +5,7 @@ import Footer from '@/src/common/footer/Footer'
 const SignInPageBuilder = () => {
   return (
     <>
-      <Header />
       Sign In
-      <Footer />
     </>
   )
 }

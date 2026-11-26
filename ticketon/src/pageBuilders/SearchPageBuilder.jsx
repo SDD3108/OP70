@@ -5,9 +5,7 @@ import Footer from '@/src/common/footer/Footer'
 const SearchPageBuilder = () => {
   return (
     <>
-      <Header />
       search
-      <Footer />
     </>
   )
 }

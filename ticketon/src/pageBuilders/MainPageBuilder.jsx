@@ -6,9 +6,7 @@ import Footer from '@/src/common/footer/Footer'
 const MainPageBuilder = () => {
   return (
     <>
-      <Header/>
       main
-      <Footer/>
     </>
   )
 }

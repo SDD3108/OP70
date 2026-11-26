@@ -5,9 +5,7 @@ import Footer from '@/src/common/footer/Footer'
 const SettingsPageBuilder = () => {
   return (
     <>
-      <Header />
       SettingsPage
-      <Footer />
     </>
   )
 }

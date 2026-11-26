@@ -4,9 +4,7 @@ import Footer from '@/src/common/footer/Footer'
 const EventPageBuilder = () => {
   return (
     <>
-      <Header />
       event
-      <Footer />
     </>
   )
 }

@@ -1,24 +1,44 @@
 "use client";
 
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchEvents } from "@/src/store/slices/eventsSlice";
+import { useEffect, useState } from "react";
+import { eventService } from "@/src/services/eventService";
 
-export function useEvents({ search = "", category = "" } = {}) {
-  const dispatch = useDispatch();
-  const { items, status, error } = useSelector((state) => state.events);
+export function useEvents({ search = "", category = "" } = {}){
+  const [retry, setRetry] = useState(0);
+  const [result, setResult] = useState(null);
+  const key = JSON.stringify([search, category, retry]);
 
   useEffect(() => {
+    let active = true;
     const filters = {};
-    if (search) filters.search = search;
-    if (category) filters.category = category;
-    dispatch(fetchEvents(filters)).unwrap().catch(console.error);
-  }, [dispatch, search, category]);
+    if(search){
+      filters.search = search;
+    }
+    if(category){
+      filters.category = category;
+    }
+
+    eventService.getEvents(filters).then((events) => {
+      if(active){
+        setResult({ key, events, error: null });
+      }
+    }).catch((error) => {
+      if(active){
+        setResult({ key, events: [], error: error.message });
+      }
+    });
+
+    return () => {
+      active = false;
+    };
+  },[search, category, key]);
+
+  const isLoading = result?.key !== key;
 
   return {
-    events: items,
-    isLoading: status == "loading" || status == "idle",
-    error,
-    refresh: () => dispatch(fetchEvents({ ...(search && { search }), ...(category && { category }) })).unwrap().catch(console.error),
+    events: isLoading ? [] : result.events,
+    isLoading,
+    error: isLoading ? null : result.error,
+    refresh: () => setRetry((value) => value + 1),
   };
 }
