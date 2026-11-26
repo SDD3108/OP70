@@ -22,7 +22,7 @@ export default function EventsCatalog({ search = "", category = "" }) {
 
       {isLoading ? <LoadingSpinner label="Загружаем мероприятия..." /> : error ? (
         <ErrorMessage message={error} onRetry={refresh} />
-      ) : events.length === 0 ? (
+      ) : events.length == 0 ? (
         <EmptyState title="Мероприятий пока нет" description="Попробуйте изменить поиск или вернитесь позже." />
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

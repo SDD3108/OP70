@@ -17,7 +17,7 @@ export function useEvents({ search = "", category = "" } = {}) {
 
   return {
     events: items,
-    isLoading: status === "loading" || status === "idle",
+    isLoading: status == "loading" || status == "idle",
     error,
     refresh: () => dispatch(fetchEvents({ ...(search && { search }), ...(category && { category }) })).unwrap().catch(console.error),
   };

@@ -20,7 +20,7 @@ export default function BookingPanel({ event }) {
   if (!event || id == null) return null;
 
   function handleBooking() {
-    if (status === "loading") return;
+    if (status == "loading") return;
     reserve({ eventId: id, quantity, seatIds }).catch(console.error);
   }
 
@@ -42,9 +42,9 @@ export default function BookingPanel({ event }) {
       </div>
       <p className="mt-2 text-xs text-zinc-500">Окончательную стоимость и доступность билетов проверяет сервер.</p>
       {error && <p role="alert" className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}
-      {status === "succeeded" && reservation && <p role="status" className="mt-4 rounded-lg bg-green-50 p-3 text-sm text-green-800">Запрос на бронирование отправлен. Проверьте его статус в личном кабинете.</p>}
-      <button type="button" onClick={handleBooking} disabled={status === "loading"} className="mt-5 w-full rounded-lg bg-[#00e35b] px-5 py-3 font-bold text-zinc-950 hover:bg-[#00c94f] disabled:opacity-50">
-        {status === "loading" ? "Отправка..." : "Забронировать"}
+      {status == "succeeded" && reservation && <p role="status" className="mt-4 rounded-lg bg-green-50 p-3 text-sm text-green-800">Запрос на бронирование отправлен. Проверьте его статус в личном кабинете.</p>}
+      <button type="button" onClick={handleBooking} disabled={status == "loading"} className="mt-5 w-full rounded-lg bg-[#00e35b] px-5 py-3 font-bold text-zinc-950 hover:bg-[#00c94f] disabled:opacity-50">
+        {status == "loading" ? "Отправка..." : "Забронировать"}
       </button>
     </aside>
   );

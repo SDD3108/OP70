@@ -8,7 +8,7 @@ import { useAuth } from "@/src/hooks/useAuth";
 import { validateAuthForm } from "@/src/utils/validators";
 
 export default function AuthForm({ mode = "login" }) {
-  const isRegister = mode === "register";
+  const isRegister = mode == "register";
   const router = useRouter();
   const { login, register, isLoading, error } = useAuth();
   const [values, setValues] = useState({ name: "", email: "", password: "" });

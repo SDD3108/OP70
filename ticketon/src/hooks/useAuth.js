@@ -10,7 +10,7 @@ export function useAuth() {
   return {
     user,
     isAuthenticated: Boolean(user),
-    isLoading: status === "loading",
+    isLoading: status == "loading",
     error,
     login: (values) => dispatch(loginUser(values)).unwrap(),
     register: (values) => dispatch(registerUser(values)).unwrap(),
