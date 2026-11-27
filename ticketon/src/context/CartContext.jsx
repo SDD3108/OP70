@@ -37,7 +37,10 @@ const CartProvider = ({children})=>{
         const item = {eventId, quantity, seats}
         update({...cart, items: [...cart.items.filter((item) => item.eventId != eventId), item]})
     }
-    const remove = (eventId) => update({...cart, items: cart.items.filter((item) => item.eventId != eventId)})
+    const remove = (eventId)=>{
+        update({...cart, items: cart.items.filter((item) => item.eventId != eventId)});
+        console.log(eventId);
+    }
     const changeQuantity = (eventId, quantity)=>{
         const event = events.find((item) => item.id == eventId)
         if(!event || hasSeats(event) || !Number.isInteger(quantity) || quantity < 1 || quantity > maxTickets){
@@ -56,7 +59,7 @@ const CartProvider = ({children})=>{
         }
         else{
             add(eventId, seats.length, seats)
-        }
+        }        
     }
     const applyPromo = (value)=>{
         const promo = value.trim().toUpperCase()

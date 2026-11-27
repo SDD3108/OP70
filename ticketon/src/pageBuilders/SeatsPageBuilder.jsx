@@ -27,6 +27,10 @@ const SeatSelection = ({event, initialSeats})=>{
   },[event.id]);
 
   const seats = selected.filter((seat) => !occupied.includes(seat));
+  console.log(seats);
+  console.log(occupied);
+  
+  
   const total = seats.reduce((sum, seat) => sum + seatPrice(event, seat), 0);
   const toggle = (seat)=>{
     setError("");
@@ -71,7 +75,7 @@ const SeatSelection = ({event, initialSeats})=>{
                     const taken = occupied.includes(seat);
                     const active = seats.includes(seat);
                     const vip = vipRows.includes(row);
-                    return <Button key={seat} type="button" size="icon-sm" variant={active ? "default" : "outline"} disabled={taken} aria-label={`Ряд ${row}, место ${number}, ${taken ? "занято" : formatPrice(seatPrice(event, seat))}`} aria-pressed={active} onClick={() => toggle(seat)} className={`size-7 rounded-md p-0 text-xs sm:size-9 ${number == 6 ? "ml-3" : ""} ${taken ? "bg-zinc-300 text-zinc-600 opacity-70" : active ? "bg-primary text-white" : vip ? "border-amber-300 bg-amber-100 text-amber-900 hover:bg-amber-200" : "bg-secondary"}`}>{number}</Button>;
+                    return <Button key={seat} type="button" size="icon-sm" variant={active ? "default" : "outline"} disabled={taken} aria-label={`Ряд ${row}, место ${number}, ${taken ? "занято" : formatPrice(seatPrice(event, seat))}`} aria-pressed={active} onClick={() => toggle(seat)} className={`size-7 rounded-md p-0 text-xs sm:size-9 ${number == seatNumbers.length / 2 + 1 ? "" : ""} ${taken ? "bg-zinc-300 text-zinc-600 opacity-70" : active ? "bg-primary text-white" : vip ? "border-amber-300 bg-amber-100 text-amber-900 hover:bg-amber-200" : "bg-secondary"}`}>{number}</Button>;
                   })}
                   <span className="w-5 text-center text-xs text-muted-foreground">{row}</span>
                 </div>

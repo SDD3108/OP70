@@ -52,7 +52,53 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 }
+/* :root {
+  color-scheme: light;
 
+  --background: #FFFFFF;
+  --foreground: #171717;
+
+  --card: #FFFFFF;
+  --card-foreground: #171717;
+
+  --popover: #FFFFFF;
+  --popover-foreground: #171717;
+
+  --primary: #008F70;
+  --primary-foreground: #FFFFFF;
+
+  --secondary: #F5F6F7;
+  --secondary-foreground: #171717;
+
+  --muted: #F5F6F7;
+  --muted-foreground: #737780;
+
+  --accent: #E8F7F1;
+  --accent-foreground: #00765C;
+
+  --destructive: #DC2626;
+
+  --border: #E4E7EB;
+  --input: #E4E7EB;
+  --ring: #008F70;
+
+  --chart-1: #008F70;
+  --chart-2: #8754D9;
+  --chart-3: #1976D2;
+  --chart-4: #F59E0B;
+  --chart-5: #171717;
+
+  --radius: 0.625rem;
+
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #171717;
+  --sidebar-primary: #008F70;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #E8F7F1;
+  --sidebar-accent-foreground: #00765C;
+  --sidebar-border: #E4E7EB;
+  --sidebar-ring: #008F70;
+} */
 :root {
   color-scheme: light;
 

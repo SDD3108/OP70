@@ -1,8 +1,8 @@
 import { events } from "@/src/datas/events";
 
-export const seatRows = ["A", "B", "C", "D", "E", "F", "G", "H"];
-export const seatNumbers = [1,2,3,4,5,6,7,8,9,10];
-export const vipRows = ["G", "H"];
+export const seatRows = ["1", "2", "3", "4", "5", "6", "7",];
+export const seatNumbers = [1,2,3,4,5,6,7,8,9,10,11,12];
+export const vipRows = ["6", "7"];
 export const occupiedSeats = ["A2","A3","B6","C4","C5","D2","E7","F3","G8"];
 export const maxTickets = 10;
 export const promoCodes = { TICKET10: 10, WELCOME15: 15 };

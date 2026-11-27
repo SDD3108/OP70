@@ -17,6 +17,7 @@ import LoadingSpinner from "@/src/components/shared/LoadingSpinner";
 const CartItem = ({line})=>{
   const {remove, changeQuantity, removeSeat} = useCart();
   const {event, seats, quantity, subtotal} = line;
+  console.log(seats);
   return (
     <Card className="rounded-2xl border shadow-none">
       <CardContent className="space-y-4">
