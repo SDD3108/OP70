@@ -1,13 +1,13 @@
-import React from 'react'
-import Header from '@/src/common/header/Header'
-import Footer from '@/src/common/footer/Footer'
+import AuthForm from "@/src/feature/auth/AuthForm";
 
-const SignUpPageBuilder = () => {
+const SignUpPageBuilder = ()=>{
   return (
     <>
-      Sign Up
+      <div className="mx-auto grid min-h-[620px] max-w-7xl place-items-center px-4 py-12">
+        <AuthForm mode="register" />
+      </div>
     </>
-  )
+  );
 }
 
-export default SignUpPageBuilder
+export default SignUpPageBuilder;

@@ -1,19 +1,31 @@
-import api from "@/lib/api";
+import { demoUser } from "@/src/datas/site";
+import { readStorage, writeStorage } from "@/src/utils/localStorage";
+
+const key = "ticketon-user";
+const accountsKey = "ticketon-accounts";
 
 export const authService = {
-  async login(credentials) {
-    const { data } = await api.post("/auth/login/", credentials);
-    return data.user ?? data;
+  async login({email}){
+    const normalized = email.trim().toLowerCase()
+    const accounts = readStorage(accountsKey, [])
+    const user = accounts.find((account) => account.email == normalized) || (normalized == demoUser.email ? demoUser : { name: normalized.split("@")[0], email: normalized })
+    writeStorage(key, user)
+    return user
   },
-  async register(values) {
-    const { data } = await api.post("/auth/register/", values);
-    return data.user ?? data;
+  async register({name, email}){
+    const user = {
+      name: name.trim(),
+      email: email.trim().toLowerCase(),
+    }
+    const accounts = readStorage(accountsKey, []).filter((account) => account.email !== user.email)
+    writeStorage(accountsKey, [...accounts, user]);
+    writeStorage(key,user);
+    return user;
   },
-  async getMe() {
-    const { data } = await api.get("/auth/me/");
-    return data.user ?? data;
+  async getMe(){
+    return readStorage(key, null)
   },
-  async logout() {
-    await api.post("/auth/logout/");
+  async logout(){
+    localStorage.removeItem(key);
   },
-};
+}

@@ -3,28 +3,26 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
+import { Input } from "@/src/ui/input";
+import { Button } from "@/src/ui/button";
 
-export default function SearchBar({ initialValue = "", placeholder = "Название мероприятия или город", className = "" }) {
-  const [query, setQuery] = useState(initialValue);
-  const router = useRouter();
-
-  function handleSubmit(event) {
+const SearchBar = ({initialValue = "", className = ""})=>{
+  const [query, setQuery] = useState(initialValue)
+  const router = useRouter()
+  const submit = (event) => {
     event.preventDefault();
-    const search = query.trim();
-    router.push(search ? `/search?q=${encodeURIComponent(search)}` : "/events");
+    router.push(`/search?q=${encodeURIComponent(query.trim())}`)
   }
 
   return (
-    <form role="search" onSubmit={handleSubmit} className={`flex items-center gap-2 rounded-xl border border-zinc-200 bg-white p-2 shadow-sm ${className}`}>
-      <Search className="ml-3 h-5 w-5 shrink-0 text-zinc-400" aria-hidden="true" />
-      <input
-        aria-label="Поиск мероприятий"
-        value={query}
-        onChange={(event) => setQuery(event.target.value)}
-        placeholder={placeholder}
-        className="min-w-0 flex-1 bg-transparent px-2 py-2 text-sm text-zinc-900 outline-none placeholder:text-zinc-400"
-      />
-      <button type="submit" className="shrink-0 rounded-lg bg-primary px-5 py-3 text-sm font-bold text-primary-foreground transition-colors hover:bg-accent-foreground">Найти</button>
+    <form onSubmit={submit} role="search" className={`flex items-center gap-2 ${className}`}>
+      <div className="relative flex-1">
+        <Search className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
+        <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Мероприятие, город или место" aria-label="Поиск мероприятий" className="h-12 rounded-xl pl-11" />
+      </div>
+      <Button type="submit" size="lg" className="h-12 rounded-xl px-5">Найти</Button>
     </form>
   );
-}
+};
+
+export default SearchBar;

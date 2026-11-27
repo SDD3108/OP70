@@ -1,33 +1,42 @@
-import { CalendarDays, MapPin, TicketCheck } from "lucide-react";
+import Link from "next/link";
+import { CalendarDays, MapPin } from "lucide-react";
+import { events } from "@/src/datas/events";
+import { Card, CardContent } from "@/src/ui/card";
+import { Button } from "@/src/ui/button";
 import { formatDate, formatPrice } from "@/src/utils/formatters";
 
-const statusNames = {
-  confirmed: "Подтверждён",
-  pending: "Ожидает подтверждения",
-  cancelled: "Отменён",
-};
-
-export default function TicketCard({ booking }) {
-  if (!booking) return null;
-  const event = booking.event || {};
-  const total = booking.total ?? booking.total_price;
-  const start = event.starts_at || event.date;
+const TicketCard = ({ booking, onCancel }) => {
+  const event = events.find((item) => item.id == booking.eventId);
+  if(!event){
+    return null;
+  }
+  const cancelled = booking.status == "cancelled";
 
   return (
-    <article className="flex flex-col justify-between gap-5 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm sm:flex-row sm:items-center">
-      <div className="flex items-start gap-4">
-        <div className="rounded-xl bg-accent p-3 text-primary"><TicketCheck className="h-7 w-7" aria-hidden="true" /></div>
-        <div>
-          <p className="font-bold text-zinc-900">{event.title || booking.event_title || "Билет на мероприятие"}</p>
-          <p className="mt-2 flex items-center gap-2 text-sm text-zinc-500"><CalendarDays className="h-4 w-4" /> {formatDate(start)}</p>
-          <p className="mt-1 flex items-center gap-2 text-sm text-zinc-500"><MapPin className="h-4 w-4" /> {event.city || "Место уточняется"}</p>
-        </div>
+    <Card className="rounded-2xl border py-0 shadow-none"><CardContent className="flex flex-wrap items-center gap-4 p-4 sm:flex-nowrap">
+      <img src={event.image} alt={event.title} className="h-28 w-20 shrink-0 rounded-xl object-cover" />
+      <div className="min-w-0 flex-1 space-y-2">
+        <Link href={`/events/${event.id}`} className="font-bold hover:text-primary">
+          {event.title}
+        </Link>
+        <p className="flex items-center gap-1 text-sm text-muted-foreground">
+          <CalendarDays className="size-4" />
+          {formatDate(event.date)} · {event.time}
+        </p>
+        <p className="flex items-center gap-1 text-sm text-muted-foreground">
+          <MapPin className="size-4" />{event.city}, {event.venue}
+        </p>
+        <p className="text-xs text-muted-foreground">
+          Демо-билет · {booking.quantity} шт.
+        </p>
       </div>
-      <div className="sm:text-right">
-        <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold text-zinc-700">{statusNames[booking.status] || booking.status || "Статус уточняется"}</span>
-        <p className="mt-3 text-sm text-zinc-500">Количество: {booking.quantity ?? 1}</p>
-        <p className="mt-1 text-lg font-bold text-zinc-900">{formatPrice(total)}</p>
+      <div className="space-y-2 sm:text-right">
+        <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${cancelled ? "bg-secondary text-muted-foreground" : "bg-green-50 text-green-800"}`}>{cancelled ? "Отменён" : "Забронирован"}</span>
+        <p className="text-lg font-bold">{formatPrice(booking.total)}</p>
+        {!cancelled && <Button variant="outline" size="sm" onClick={() => onCancel(booking.id)}>Отменить</Button>}
       </div>
-    </article>
+    </CardContent></Card>
   );
-}
+};
+
+export default TicketCard;

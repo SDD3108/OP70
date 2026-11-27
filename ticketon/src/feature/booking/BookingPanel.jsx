@@ -1,116 +1,137 @@
 "use client";
 
 import { useState } from "react";
-import { Minus, Plus, Ticket } from "lucide-react";
+import Link from "next/link";
+import { Minus, Plus, Ticket, CheckCircle } from "lucide-react";
+import { useAuth } from "@/src/hooks/useAuth";
 import { bookingService } from "@/src/services/bookingService";
 import { formatPrice } from "@/src/utils/formatters";
+import { Card, CardContent, CardHeader, CardTitle } from "@/src/ui/card";
+import { Button, buttonVariants } from "@/src/ui/button";
+import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription,DialogFooter} from "@/src/ui/dialog";
 
-export default function BookingPanel({ event }){
-  const id = event?.id ?? event?._id;
-  if (!event || id == null){
-    return null;
-  }
-
-  return <BookingForm key={id} event={event} id={id} />;
-}
-
-const BookingForm = ({ event, id })=>{
+const BookingPanel = ({event}) => {
+  const { user, isLoading } = useAuth();
   const [quantity, setQuantity] = useState(1);
+  const [open, setOpen] = useState(false);
   const [reservation, setReservation] = useState(null);
-  const [status, setStatus] = useState("idle");
-  const [error, setError] = useState(null);
-  const unitPrice = Number(event.price ?? event.min_price);
+  const [error, setError] = useState("");
+  const [pending, setPending] = useState(false);
 
-  const handleBooking = async()=>{
-    if(status == "loading"){
+  const reserve = async()=>{
+    if(!user || pending){
       return;
     }
-    setStatus("loading");
-    setError(null);
-    setReservation(null);
-
+    setPending(true);
+    setError("");
     try{
-      const data = await bookingService.createBooking({
-        eventId: id,
+      const booking = await bookingService.createBooking({
+        eventId: event.id,
         quantity,
+        email: user.email,
       });
-      setReservation(data);
-      setStatus("succeeded");
+      setReservation(booking);
+      setOpen(false);
     }
-    catch(error){
+    catch (error){
       setError(error.message);
-      setStatus("failed");
+    }
+    finally{
+      setPending(false);
     }
   }
-
   return (
-    <aside className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
-      <h2 className="flex items-center gap-2 text-xl font-bold text-zinc-900">
-        <Ticket className="h-6 w-6 text-primary" /> Бронирование
-      </h2>
-      <p className="mt-2 text-sm text-zinc-500">{event.title || event.name}</p>
-      <div className="mt-6 flex items-center justify-between">
-        <span className="text-sm font-semibold text-zinc-700">
-          Количество билетов
-        </span>
-        <div className="flex items-center gap-4">
-          <button
-            type="button"
-            aria-label="Уменьшить количество"
-            disabled={quantity <= 1}
-            onClick={() => setQuantity(quantity - 1)}
-            className="rounded-lg border p-2 disabled:opacity-30"
-          >
-            <Minus className="h-4 w-4" />
-          </button>
-          <span className="w-5 text-center font-bold">{quantity}</span>
-          <button
-            type="button"
-            aria-label="Увеличить количество"
-            disabled={quantity >= 10}
-            onClick={() => setQuantity(quantity + 1)}
-            className="rounded-lg border p-2 disabled:opacity-30"
-          >
-            <Plus className="h-4 w-4" />
-          </button>
+    <Card className="rounded-2xl border shadow-none">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-xl font-bold">
+          <Ticket className="text-primary" />
+          Бронирование
+        </CardTitle>
+        <p className="text-sm text-muted-foreground">
+          {event.date && event.time} · {event.venue}
+        </p>
+      </CardHeader>
+      <CardContent className="space-y-5">
+        <div className="flex items-center justify-between gap-2">
+          <span className="font-medium">Количество билетов</span>
+          <div className="flex items-center gap-3">
+            <Button variant="outline" size="icon" aria-label="Уменьшить" disabled={quantity <= 1} onClick={() => setQuantity(quantity - 1)}>
+              <Minus />
+            </Button>
+            <span className="font-bold">{quantity}</span>
+            <Button variant="outline" size="icon" aria-label="Увеличить" disabled={quantity >= 10} onClick={() => setQuantity(quantity + 1)}>
+              <Plus />
+            </Button>
+          </div>
         </div>
-      </div>
-      <div className="mt-6 flex items-center justify-between border-t border-zinc-200 pt-5">
-        <span className="font-semibold text-zinc-700">Примерная стоимость</span>
-        <strong className="text-xl text-zinc-900">
-          {Number.isFinite(unitPrice)
-            ? formatPrice(unitPrice * quantity)
-            : "Уточняется"}
-        </strong>
-      </div>
-      <p className="mt-2 text-xs text-zinc-500">
-        Окончательную стоимость и доступность билетов проверяет сервер.
-      </p>
-      {error && (
-        <p
-          role="alert"
-          className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700"
-        >
-          {error}
+        <div className="flex items-center justify-between border-t pt-4">
+          <span>Итого</span>
+          <span className="text-2xl font-extrabold">
+            {formatPrice(event.price * quantity)}
+          </span>
+        </div>
+        {isLoading ? (
+          <Button disabled className="w-full">
+            Загрузка...
+          </Button>
+        ) : user ? (
+          <Button size="lg" className="h-12 w-full rounded-xl" 
+            onClick={() => {
+              setReservation(null)
+              setError("")
+              setOpen(true)
+            }}
+          >
+            Забронировать
+          </Button>
+        ) : (
+          <Link href="/signin" className={buttonVariants({size: "lg",className: "h-12 w-full rounded-xl"})}>
+            Войти для бронирования
+          </Link>
+        )}
+        {reservation && (
+          <div role="status" className="space-y-2 rounded-xl bg-green-50 p-3 text-green-800">
+            <p className="flex items-center gap-2 font-medium">
+              <CheckCircle className="size-4" />
+              Бронирование создано
+            </p>
+            <Link href="/settings/tickets" className="text-sm underline">
+              Перейти к моим билетам
+            </Link>
+          </div>
+        )}
+        <p className="text-xs leading-relaxed text-muted-foreground">
+          Демо-бронирование. Оплата не производится, билет не является
+          действительным.
         </p>
-      )}
-      {status === "succeeded" && reservation && (
-        <p
-          role="status"
-          className="mt-4 rounded-lg bg-green-50 p-3 text-sm text-green-800"
-        >
-          Запрос на бронирование отправлен. Проверьте его статус в личном
-          кабинете.
-        </p>
-      )}
-      <button
-        type="button"
-        onClick={handleBooking}
-        disabled={status === "loading"}
-        className="mt-5 w-full rounded-lg bg-primary px-5 py-3 font-bold text-primary-foreground hover:bg-accent-foreground disabled:opacity-50"
-      >
-        {status === "loading" ? "Отправка..." : "Забронировать"}
-      </button>
-    </aside>
+      </CardContent>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Подтвердить бронирование?</DialogTitle>
+            <DialogDescription>
+              {event.title} · {quantity} шт. ·{" "}
+              {formatPrice(event.price * quantity)}. Это демонстрация без
+              оплаты.
+            </DialogDescription>
+          </DialogHeader>
+          {error && (
+            <p role="alert" className="text-sm text-primary">
+              {error}
+            </p>
+          )}
+          <DialogFooter>
+            <Button variant="outline" disabled={pending} onClick={() => setOpen(false)}>
+              Отмена
+            </Button>
+            <Button disabled={pending} onClick={reserve}>
+              {pending ? "Бронирование..." : "Подтвердить"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </Card>
   );
-}
+};
+
+export default BookingPanel;

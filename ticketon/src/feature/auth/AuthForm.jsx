@@ -3,81 +3,118 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, LoaderCircle } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/src/hooks/useAuth";
 import { validateAuthForm } from "@/src/utils/validators";
+import { demoUser } from "@/src/datas/site";
+import { Button } from "@/src/ui/button";
+import { Input } from "@/src/ui/input";
+import { Label } from "@/src/ui/label";
+import {Card,CardHeader,CardTitle,CardDescription,CardContent,} from "@/src/ui/card";
 
-export default function AuthForm({ mode = "login" }){
-  const isRegister = mode == "register";
+const AuthForm = ({mode = "login"}) => {
+  const registerMode = mode == "register"
   const router = useRouter();
   const { login, register, isLoading, error } = useAuth();
-  const [values, setValues] = useState({ name: "",email: "",password: "" });
+  const [values, setValues] = useState({ name: "", email: "", password: "" });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
 
-  const updateField = (field, value)=>{
-    setValues((current) => ({ ...current, [field]: value }));
-    setErrors((current) => ({ ...current, [field]: undefined }));
+  const change = (field, value)=>{
+    setValues((current)=>({ ...current, [field]: value }))
+    setErrors((current)=>({ ...current, [field]: undefined }))
   }
-
-  const handleSubmit = (event)=>{
+  const submit = async(event)=>{
     event.preventDefault();
-    const validationErrors = validateAuthForm(values, isRegister ? "register" : "login");
-    setErrors(validationErrors);
-    
+    const validationErrors = validateAuthForm(values, mode)
+    setErrors(validationErrors)
     if(Object.keys(validationErrors).length){
-      return;
+      return
     }
+    try{
+      await (registerMode ? register(values) : login(values))
+      router.push("/settings/profile")
+    }
+    catch(error){
 
-    const request = isRegister ? register(values) : login({ email: values.email, password: values.password });
-    request.then(() => {
-      router.push("/settings/profile");
-      router.refresh();
-    }).catch(console.error);
+    }
+  }
+  const demo = async()=>{
+    try{
+      await login({email: demoUser.email})
+      router.push("/settings/profile")
+    }
+    catch(error){
+
+    }
   }
 
   return (
-    <div className="mx-auto w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm sm:p-8">
-      <h1 className="text-2xl font-extrabold text-zinc-950">
-        {isRegister ? "Создать аккаунт" : "С возвращением!"}
-      </h1>
-      <p className="mt-2 text-sm text-zinc-500">
-        {isRegister ? "Зарегистрируйтесь, чтобы бронировать билеты." : "Войдите, чтобы управлять своими билетами."}
-      </p>
-      <form onSubmit={handleSubmit} className="mt-8 space-y-5" noValidate>
-        {isRegister && (
-          <label className="block text-sm font-semibold text-zinc-800">
-            Имя
-            <input autoComplete="name" value={values.name} onChange={(e) => updateField("name", e.target.value)} className="mt-2 w-full rounded-lg border border-zinc-300 px-4 py-3 outline-none focus:border-primary" placeholder="Ваше имя"/>
-            {errors.name && <span className="mt-1 block text-xs text-red-600">{errors.name}</span>}
-          </label>
-        )}
-        <label className="block text-sm font-semibold text-zinc-800">
-          Email
-          <input type="email" autoComplete="email" value={values.email} onChange={(e) => updateField("email", e.target.value)} className="mt-2 w-full rounded-lg border border-zinc-300 px-4 py-3 outline-none focus:border-primary" placeholder="you@example.com" />
-          {errors.email && <span className="mt-1 block text-xs text-red-600">{errors.email}</span>}
-        </label>
-        <label className="block text-sm font-semibold text-zinc-800">
-          Пароль
-          <span className="relative mt-2 block">
-            <input type={showPassword ? "text" : "password"} autoComplete={isRegister ? "new-password" : "current-password"} value={values.password} onChange={(e) => updateField("password", e.target.value)} className="w-full rounded-lg border border-zinc-300 px-4 py-3 pr-12 outline-none focus:border-primary" placeholder={isRegister ? "Минимум 8 символов" : "Введите пароль"} />
-            <button type="button" className="absolute inset-y-0 right-3 flex items-center text-zinc-500" aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"} onClick={() => setShowPassword((value) => !value)}>
-              {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-            </button>
-          </span>
-          {errors.password && <span className="mt-1 block text-xs text-red-600">{errors.password}</span>}
-        </label>
-        {error && <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}
-        <button disabled={isLoading} type="submit" className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-5 py-3 font-bold text-primary-foreground hover:bg-accent-foreground disabled:opacity-50">
-          {isLoading && <LoaderCircle className="h-4 w-4 animate-spin" />} {isRegister ? "Зарегистрироваться" : "Войти"}
-        </button>
-      </form>
-      <p className="mt-6 text-center text-sm text-zinc-500">
-        {isRegister ? "Уже есть аккаунт?" : "Нет аккаунта?"} {" "}
-        <Link className="font-bold text-primary hover:underline" href={isRegister ? "/signin" : "/signup"}>
-          {isRegister ? "Войти" : "Регистрация"}
-        </Link>
-      </p>
-    </div>
+    <Card className="w-full max-w-md rounded-3xl border shadow-none">
+      <CardHeader>
+        <CardTitle className="text-3xl font-extrabold tracking-tight">
+          {registerMode ? "Регистрация" : "С возвращением!"}
+        </CardTitle>
+        <CardDescription>
+          {registerMode ? "Создайте демо-аккаунт Ticketon" : "Войдите, чтобы управлять билетами"}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={submit} noValidate className="space-y-4">
+          {registerMode && (
+            <div className="space-y-2">
+              <Label htmlFor="name">Имя</Label>
+              <Input id="name" value={values.name} onChange={(event) => change("name", event.target.value)} placeholder="Ваше имя" aria-invalid={Boolean(errors.name)} className="h-11 rounded-xl"
+              />
+              {errors.name && (
+                <p className="text-xs text-primary">{errors.name}</p>
+              )}
+            </div>
+          )}
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input id="email" type="email" value={values.email} onChange={(event) => change("email", event.target.value)} placeholder="you@example.com" aria-invalid={Boolean(errors.email)} className="h-11 rounded-xl"/>
+            {errors.email && (
+              <p className="text-xs text-primary">{errors.email}</p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="password">Демо-пароль</Label>
+            <div className="relative">
+              <Input id="password" type={showPassword ? "text" : "password"} value={values.password} onChange={(event) => change("password", event.target.value)} placeholder="Не используйте реальный пароль" autoComplete="off" aria-invalid={Boolean(errors.password)} className="h-11 rounded-xl pr-12"/>
+              <Button type="button" variant="ghost" size="icon" aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"} onClick={() => setShowPassword(!showPassword)} className="absolute right-1 top-1">
+                {showPassword ? <EyeOff /> : <Eye />}
+              </Button>
+            </div>
+            {errors.password && (
+              <p className="text-xs text-primary">{errors.password}</p>
+            )}
+          </div>
+          {error && (
+            <p role="alert" className="text-sm text-primary">
+              {error}
+            </p>
+          )}
+          <Button type="submit" disabled={isLoading} className="h-11 w-full rounded-xl">
+            {registerMode ? "Создать аккаунт" : "Войти"}
+          </Button>
+        </form>
+        <Button type="button" variant="outline" disabled={isLoading} onClick={demo} className="mt-3 h-11 w-full rounded-xl">
+          Войти как демо-пользователь
+        </Button>
+        <p className="mt-5 text-center text-sm text-muted-foreground">
+          {registerMode ? "Уже есть аккаунт?" : "Нет аккаунта?"}{" "}
+          <Link className="font-semibold text-primary hover:underline" href={registerMode ? "/signin" : "/signup"}>
+            {registerMode ? "Войти" : "Регистрация"}
+          </Link>
+        </p>
+        <p className="mt-4 rounded-xl bg-secondary p-3 text-xs leading-relaxed text-muted-foreground">
+          Учебный режим: пароль не проверяется сервером и не сохраняется.
+          Используйте вымышленные данные.
+        </p>
+      </CardContent>
+    </Card>
   );
-}
+};
+
+export default AuthForm;

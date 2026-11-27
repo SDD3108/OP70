@@ -1,13 +1,13 @@
-import React from 'react'
-import Header from '@/src/common/header/Header'
-import Footer from '@/src/common/footer/Footer'
+import AuthForm from "@/src/feature/auth/AuthForm";
 
 const SignInPageBuilder = () => {
-  return (
+  return(
     <>
-      Sign In
+      <div className="mx-auto grid min-h-[620px] max-w-7xl place-items-center px-4 py-12">
+        <AuthForm mode="login" />
+      </div>
     </>
   )
 }
 
-export default SignInPageBuilder
+export default SignInPageBuilder;

@@ -1,13 +1,11 @@
-import React from 'react'
-import Header from '@/src/common/header/Header'
-import Footer from '@/src/common/footer/Footer'
+import EventsCatalog from "@/src/feature/events/EventsCatalog";
 
-const SearchPageBuilder = () => {
-  return (
-    <>
-      search
-    </>
-  )
+const SearchPageBuilder = ({search = ""})=>{
+    return (
+        <>
+            <EventsCatalog key={search} search={search} title="Поиск мероприятий"/>
+        </>
+    )
 }
 
-export default SearchPageBuilder
+export default SearchPageBuilder;

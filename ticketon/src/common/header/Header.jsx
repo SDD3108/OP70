@@ -7,13 +7,14 @@ import { usePathname } from "next/navigation";
 import { Menu, Search, UserRound, X } from "lucide-react";
 import { MAIN_NAVIGATION } from "@/src/datas/navigation";
 import { useAuth } from "@/src/hooks/useAuth";
+import { Button, buttonVariants } from "@/src/ui/button";
 
 const Header = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const pathname = usePathname();
-  const { user, isAuthenticated } = useAuth();
+  const [menuOpen, setMenuOpen] = useState(false)
+  const pathname = usePathname()
+  const { user, isAuthenticated } = useAuth()
 
-  function isActive(href) {
+  const isActive = (href)=>{
     return href == "/" ? pathname == "/" : pathname?.startsWith(href);
   }
 
@@ -44,13 +45,13 @@ const Header = () => {
           ) : (
             <>
               <Link href="/signin" className="rounded-lg px-3 py-2.5 text-sm font-semibold text-[#555961] transition-colors hover:text-[#E53935]">Войти</Link>
-              <Link href="/signup" className="rounded-lg bg-[#E53935] px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#C62828]">Регистрация</Link>
+              <Link href="/signup" className={buttonVariants({className:"rounded-lg font-bold"})}>Регистрация</Link>
             </>
           )}
         </div>
-        <button type="button" className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-[#E8E9EC] text-[#202124] transition-colors hover:bg-[#F5F6F8] md:hidden" aria-label={menuOpen ? "Закрыть меню" : "Открыть меню"} aria-expanded={menuOpen} aria-controls="mobile-navigation" onClick={() => setMenuOpen((current) => !current)}>
+        <Button type="button" variant="outline" size="icon" className="h-11 w-11 rounded-lg md:hidden" aria-label={menuOpen ? "Закрыть меню" : "Открыть меню"} aria-expanded={menuOpen} aria-controls="mobile-navigation" onClick={() => setMenuOpen((current) => !current)}>
           {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
+        </Button>
       </div>
       {menuOpen && (
         <nav id="mobile-navigation" aria-label="Мобильная навигация" className="border-t border-[#E8E9EC] bg-white px-4 py-4 md:hidden">
@@ -67,7 +68,7 @@ const Header = () => {
             ) : (
               <>
                 <Link href="/signin" onClick={() => setMenuOpen(false)} className="rounded-lg px-4 py-3 text-sm font-medium text-[#555961] hover:bg-[#F5F6F8]">Войти</Link>
-                <Link href="/signup" onClick={() => setMenuOpen(false)} className="rounded-lg bg-[#E53935] px-4 py-3 text-center text-sm font-bold text-white transition-colors hover:bg-[#C62828]">Регистрация</Link>
+                <Link href="/signup" onClick={() => setMenuOpen(false)} className={buttonVariants({className:"rounded-lg font-bold"})}>Регистрация</Link>
               </>
             )}
           </div>

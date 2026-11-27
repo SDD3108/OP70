@@ -1,10 +1,12 @@
 import React from 'react'
 import EventsPageBuilder from '@/src/pageBuilders/EventsPageBuilder'
+import { categories, dates } from "@/src/datas/events";
 
-const EventsPage = () => {
+const EventsPage = async({searchParams}) => {
+  const { category, date } = await searchParams;
   return (
     <>
-      <EventsPageBuilder/>
+      <EventsPageBuilder category={categories.includes(category) ? category : ""} date={dates.includes(date) ? date : ""}/>
     </>
   )
 }
