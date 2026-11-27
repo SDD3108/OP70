@@ -12,12 +12,12 @@ import { formatDate } from "@/src/utils/formatters";
 
 const EventsCatalog = ({search = "",category: initialCategory = "",initialDate = "",title = "Все мероприятия",})=>{
   const [category, setCategory] = useState(initialCategory);
-  const [city, setCity] = useState("");
-  const [venue, setVenue] = useState("");
-  const [date, setDate] = useState(initialDate);
-  const [sort, setSort] = useState("date");
-  const venues = getVenues(city, category);
-  const events = filterEvents({ search, category, city, date }).filter((event) => !venue || event.venue == venue);
+  const [city, setCity] = useState("")
+  const [venue, setVenue] = useState("")
+  const [date, setDate] = useState(initialDate)
+  const [sort, setSort] = useState("date")
+  const venues = getVenues(city, category)
+  const events = filterEvents({search, category, city, date}).filter((event) => !venue || event.venue == venue)
   if(sort == "price"){
     events.sort((a, b) => a.price - b.price)
   }
