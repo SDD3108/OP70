@@ -26,9 +26,8 @@ const AuthProvider = ({ children })=>{
                 setIsLoading(false);
             }
         });
-
         return () => {
-            active = false;
+            active = false
         };
     }, []);
 
