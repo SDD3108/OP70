@@ -5,7 +5,7 @@ import { authService } from "@/src/services/authService";
 
 export const AuthContext = createContext(null);
 
-export default function AuthProvider({ children }) {
+const AuthProvider = ({ children })=>{
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -64,3 +64,4 @@ export default function AuthProvider({ children }) {
         </AuthContext.Provider>
     );
 }
+export default AuthProvider

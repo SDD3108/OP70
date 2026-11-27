@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { categories, cities, dates, filterEvents } from "@/src/datas/events";
+import { getVenues } from "@/src/datas/booking";
 import { Button } from "@/src/ui/button";
 import {Select,SelectContent,SelectItem,SelectTrigger,SelectValue,} from "@/src/ui/select";
 import EventCard from "@/src/components/EventCard";
@@ -12,9 +13,11 @@ import { formatDate } from "@/src/utils/formatters";
 const EventsCatalog = ({search = "",category: initialCategory = "",initialDate = "",title = "Все мероприятия",})=>{
   const [category, setCategory] = useState(initialCategory);
   const [city, setCity] = useState("");
+  const [venue, setVenue] = useState("");
   const [date, setDate] = useState(initialDate);
   const [sort, setSort] = useState("date");
-  const events = filterEvents({ search, category, city, date });
+  const venues = getVenues(city, category);
+  const events = filterEvents({ search, category, city, date }).filter((event) => !venue || event.venue == venue);
   if(sort == "price"){
     events.sort((a, b) => a.price - b.price)
   }
@@ -28,6 +31,7 @@ const EventsCatalog = ({search = "",category: initialCategory = "",initialDate =
   const reset = ()=>{
     setCategory("")
     setCity("")
+    setVenue("")
     setDate("")
     setSort("date")
   }
@@ -47,19 +51,38 @@ const EventsCatalog = ({search = "",category: initialCategory = "",initialDate =
       </div>
       <div className="flex flex-wrap gap-2">
         {["", ...categories].map((item) => (
-          <Button key={item} variant={category == item ? "default" : "outline"} onClick={() => setCategory(item)}>
+          <Button key={item} variant={category == item ? "default" : "outline"} onClick={()=>{
+            setCategory(item)
+            setVenue("")
+          }}>
             {item || "Все"}
           </Button>
         ))}
       </div>
       <div className="flex flex-wrap items-center gap-3 rounded-2xl border bg-white p-4">
-        <Select value={city || "all"} onValueChange={(value) => setCity(value == "all" ? "" : value)}>
+        <Select value={city || "all"} onValueChange={(value)=>{
+          setCity(value == "all" ? "" : value)
+          setVenue("")
+        }}>
           <SelectTrigger aria-label="Город" className="min-w-36">
             <SelectValue>{city || "Все города"}</SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Все города</SelectItem>
             {cities.map((item) => (
+              <SelectItem key={item} value={item}>
+                {item}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={venue || "all"} onValueChange={(value) => setVenue(value == "all" ? "" : value)}>
+          <SelectTrigger aria-label="Кинотеатр или площадка" className="min-w-44">
+            <SelectValue>{venue || (category == "Кино" ? "Все кинотеатры" : "Все кинотеатры и площадки")}</SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{category == "Кино" ? "Все кинотеатры" : "Все кинотеатры и площадки"}</SelectItem>
+            {venues.map((item) => (
               <SelectItem key={item} value={item}>
                 {item}
               </SelectItem>
@@ -87,7 +110,7 @@ const EventsCatalog = ({search = "",category: initialCategory = "",initialDate =
           Все даты
         </Button>
         {dates.map((item) => (
-          <Button key={item} variant={date === item ? "default" : "outline"} onClick={() => setDate(item)} className="h-16 min-w-20 shrink-0 flex-col rounded-xl">
+          <Button key={item} variant={date == item ? "default" : "outline"} onClick={() => setDate(item)} className="h-16 min-w-20 shrink-0 flex-col rounded-xl">
             <span className="text-xs">
               {formatDate(item, {weekday: "short",day: undefined,month: undefined})}
             </span>
@@ -103,10 +126,7 @@ const EventsCatalog = ({search = "",category: initialCategory = "",initialDate =
           ))}
         </div>
       ) : (
-        <EmptyState
-          title="Ничего не найдено"
-          description="Попробуйте изменить поиск или фильтры."
-        />
+        <EmptyState title="Ничего не найдено" description="Попробуйте изменить поиск или фильтры."/>
       )}
     </section>
   );

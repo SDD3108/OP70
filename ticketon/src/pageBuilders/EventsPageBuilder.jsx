@@ -3,7 +3,7 @@ import EventsCatalog from "@/src/feature/events/EventsCatalog";
 const EventsPageBuilder = ({category = "", date = ""})=>{
     return (
         <>
-            <EventsCatalog category={category} date={date} />
+            <EventsCatalog key={`${category}-${date}`} category={category} initialDate={date}/>
         </>
     )
 }

@@ -1,10 +1,10 @@
 import AuthForm from "@/src/feature/auth/AuthForm";
 
-const SignInPageBuilder = () => {
-  return(
+const SignInPageBuilder = ({next})=>{
+  return (
     <>
       <div className="mx-auto grid min-h-[620px] max-w-7xl place-items-center px-4 py-12">
-        <AuthForm mode="login" />
+        <AuthForm mode="login" next={next} />
       </div>
     </>
   )

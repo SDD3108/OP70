@@ -1,10 +1,11 @@
 import React from 'react'
 import SignInPageBuilder from '@/src/pageBuilders/SignInPageBuilder'
 
-const SignInPage = () => {
+const SignInPage = async({searchParams}) => {
+  const {next} = await searchParams
   return (
     <>
-      <SignInPageBuilder/>
+      <SignInPageBuilder next={next == "/checkout" ? "/checkout" : "/settings/profile"}/>
     </>
   )
 }
